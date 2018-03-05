@@ -1,7 +1,9 @@
 package ua.nure.ponomarev.words.reader;
 
 
-import ua.nure.ponomarev.exceptions.InvalidTextException;
+
+import ua.nure.ponomarev.exception.ValidationException;
+import ua.nure.ponomarev.validator.Validator;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -12,32 +14,20 @@ import java.util.regex.Pattern;
  * @author Bogdan_Ponamarev.
  */
 public class FileWordReader implements WordReader {
-    private static final Pattern linePattern = Pattern.compile("(\\w+) ?- ?(\\w+)");
+    private Validator<String> validator;
+    public FileWordReader(Validator<String> validator){
+        this.validator = validator;
+    }
 
-    public String readWords(InputStream inputStream) throws IOException {
+    public String readWords(InputStream inputStream) throws IOException, ValidationException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("utf-8")));
         StringBuilder stringBuilder = new StringBuilder();
         while (bufferedReader.ready()) {
-            stringBuilder.append(bufferedReader.readLine()).append(System.lineSeparator());
+            stringBuilder.append(bufferedReader.readLine()).append(System.getProperty("line.separator"));
         }
+        validator.validate(stringBuilder.toString());
         return stringBuilder.toString();
     }
 
-    /**
-     * Method for validation of imputed words, if text does`nt match {@code linePattern}
-     * throws exception
-     *
-     * @param text text that was obtained from user input
-     * @throws InvalidTextException if @param text dos`nt math to @linePattern
-     */
-    private void validateText(String text) throws InvalidTextException {
-       /* String[] lines = text.split(System.lineSeparator());
-        for (String line : lines) {
-            Matcher matcher = linePattern.matcher(line);
-            *//*if(!matcher.find()||langof(matcher.group(1))){
-                throw new InvalidTextException("Text dos`nt math");
-            }*//*
-        }*/
-    }
 
 }

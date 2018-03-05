@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ua.nure.ponomarev.language.Detector;
+import ua.nure.ponomarev.language.LanguageDetector;
 
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -17,13 +17,13 @@ import java.net.URLEncoder;
 /**
  * @author Bogdan_Ponamarev.
  */
-public class YandexDetectorImpl implements Detector {
-    private static final Logger logger = LogManager.getLogger(YandexDetectorImpl.class);
+public class YandexLanguageDetectorImpl implements LanguageDetector {
+    private static final Logger logger = LogManager.getLogger(YandexLanguageDetectorImpl.class);
     private static final String YANDEX_KEY = "trnsl.1.1.20180304T223522Z.42a08a8ffd4cee07.4c6362f5feb6bc0811884084f3f2894f7c27f791";
     private static final String HTTP_YANDEX_REQUEST_FOR_DETECT = "https://translate.yandex.net/api/v1.5/tr.json/detect?key=" + YANDEX_KEY + "&text=";
     private Gson gson;
 
-    public YandexDetectorImpl(Gson gson) {
+    public YandexLanguageDetectorImpl(Gson gson) {
         this.gson = gson;
     }
 
