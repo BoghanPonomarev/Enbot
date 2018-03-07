@@ -8,30 +8,33 @@ import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
+import ua.nure.ponomarev.commands.Command;
+import ua.nure.ponomarev.exception.NoSuchCommandException;
+import ua.nure.ponomarev.holder.CommandsHolder;
+
+import java.util.Map;
 
 
 public class CustomBot extends TelegramLongPollingBot{
 
     private static final String BOT_NAME = "Mr_Stuart_bot";
     private static final String BOT_TOKEN = "550389121:AAFHw1xBkO-uEjZtvZrKg0cX1ZMPJlB0_PU";
-    private BotGreeting botGreeting;
-
-    public CustomBot(BotGreeting botGreeting){
-        this.botGreeting = botGreeting;
-    }
+    private CommandsHolder commandsHolder;
     public String getBotUsername() {
         return BOT_NAME;
     }
 
+    public CustomBot(CommandsHolder commandsHolder){
+        this.commandsHolder = commandsHolder;
+    }
 
     public void onUpdateReceived(Update e) {
-        Message msg = e.getMessage(); // Это нам понадобится
+        Message msg = e.getMessage();
         String txt = msg.getText();
-        if (txt.equals("/start")) {
-            sendMsg(msg, botGreeting.getGreeting());
-        }
-        if(txt.equals("/name")){
-            sendMsg(msg,"Hi");
+        try {
+            sendMsg(msg,commandsHolder.getCommand(txt).executeCommand(txt));
+        } catch (NoSuchCommandException e1) {
+           sendMsg(msg,"I do not understand");
         }
     }
 
