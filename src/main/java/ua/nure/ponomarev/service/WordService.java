@@ -9,7 +9,9 @@ import java.util.List;
  */
 public interface WordService {
 
-    void insertWords(String text,String topicName) throws DbException, ValidationException;
+    void insertWords(String text, String topicName) throws DbException, ValidationException;
 
     List<Word> getWordsByTopic(String topic) throws DbException, ValidationException;
+
+    String translate(String text);
 }

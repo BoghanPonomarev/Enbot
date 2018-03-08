@@ -78,6 +78,7 @@ public class ServletListener implements ServletContextListener {
         commands.put("topics",new GetAllTopicsCommand(new TopicServiceImpl(transactionManager
                 ,new SqlTopicDaoImpl(connectionManager))));
         commands.put("words",new GetWordsByTopicCommand(wordService));
+        commands.put("translate",new TranslateCommand(wordService));
         return new CommandsHolderImpl(commands);
     }
     private void botInitializing(){

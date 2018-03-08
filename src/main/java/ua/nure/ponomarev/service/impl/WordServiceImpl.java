@@ -48,4 +48,12 @@ public class WordServiceImpl implements WordService {
     public List<Word> getWordsByTopic(String topic) throws DbException, ValidationException {
         return transactionManager.doWithTransaction(()-> wordDao.getWordsByTopic(topic));
     }
+
+    public String translate(String text){
+        if(languageDetector.detectLang(text).equals("en")) {
+           return translator.translate(text,"ru");
+        }else{
+           return translator.translate(text,"en");
+        }
+    }
 }
