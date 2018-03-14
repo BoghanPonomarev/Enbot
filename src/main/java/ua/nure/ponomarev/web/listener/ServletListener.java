@@ -6,9 +6,9 @@ import org.telegram.telegrambots.TelegramBotsApi;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 import ua.nure.ponomarev.bot.CustomBot;
 import ua.nure.ponomarev.commands.*;
-import ua.nure.ponomarev.dao.SqlDaoConnectionManager;
-import ua.nure.ponomarev.dao.impl.SqlTopicDaoImpl;
-import ua.nure.ponomarev.dao.impl.SqlWordDaoImpl;
+import ua.nure.ponomarev.SqlDaoConnectionManager;
+import ua.nure.ponomarev.impl.SqlTopicDaoImpl;
+import ua.nure.ponomarev.impl.SqlWordDaoImpl;
 import ua.nure.ponomarev.holder.CommandsHolder;
 import ua.nure.ponomarev.holder.CommandsHolderImpl;
 import ua.nure.ponomarev.language.LanguageDetector;
@@ -65,12 +65,17 @@ public class ServletListener implements ServletContextListener {
         translator = new YandexTranslatorImpl(gson);
         connectionManager = new SqlDaoConnectionManager(dataSource);
         transactionManager = new TransactionManager(dataSource);
-        wordService =new WordServiceImpl(transactionManager,languageDetector
+        wordService =new WordServiceImpl(transactionManager
                 ,translator,new TranslatedTextValidator(languageDetector),
                 new WordTextParserImpl(),new SqlWordDaoImpl(connectionManager));
         servletContext.setAttribute("word_service",wordService);
 
     }
+
+    /**
+     * Puts commands into command holder for bot using
+     * @return Command holder that is felt by commands
+     */
     private CommandsHolder commandsInitializing(){
         Map<String,Command> commands = new HashMap<>();
         commands.put("start",new StartCommand());
@@ -78,11 +83,16 @@ public class ServletListener implements ServletContextListener {
         commands.put("topics",new GetAllTopicsCommand(new TopicServiceImpl(transactionManager
                 ,new SqlTopicDaoImpl(connectionManager))));
         commands.put("words",new GetWordsByTopicCommand(wordService));
-        commands.put("translate",new TranslateCommand(wordService));
+        commands.put("translate",new TranslateCommandImpl(wordService));
+        commands.put("supportedLangs",new GetSupportedLanguagesCommand(wordService));
         return new CommandsHolderImpl(commands);
     }
+
+    /**
+     * Bot initializing
+     */
     private void botInitializing(){
-        ApiContextInitializer.init(); // Инициализируем апи
+        ApiContextInitializer.init();
         TelegramBotsApi botApi = new TelegramBotsApi();
         try {
             botApi.registerBot(new CustomBot(commandsInitializing()));

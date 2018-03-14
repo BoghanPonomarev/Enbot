@@ -21,6 +21,12 @@ public class CommandsHolderImpl implements CommandsHolder {
     this.commands =commands;
     }
 
+    /**
+     * Check if such command is stored in {@code commands} map
+     * @param requestLine Full requst of user
+     * @return command or throws exception
+     * @throws NoSuchCommandException if there is no such command
+     */
     @Override
     public Command getCommand(String requestLine) throws NoSuchCommandException {
         String command = getCommandFromRequest(requestLine);
@@ -31,6 +37,12 @@ public class CommandsHolderImpl implements CommandsHolder {
         return commands.get(command);
     }
 
+    /**
+     * Parse {@Code requestLine} and obtain command words
+     * @param requestLine full request from user
+     * @return name of particular command or throws exception
+     * @throws NoSuchCommandException if there is no such command
+     */
     private String getCommandFromRequest(String requestLine) throws NoSuchCommandException {
         if (requestLine == null || requestLine.equals("")) {
             logger.info("Empty command");

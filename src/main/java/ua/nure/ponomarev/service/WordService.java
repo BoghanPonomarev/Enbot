@@ -3,7 +3,9 @@ package ua.nure.ponomarev.service;
 import ua.nure.ponomarev.entity.Word;
 import ua.nure.ponomarev.exception.DbException;
 import ua.nure.ponomarev.exception.ValidationException;
+
 import java.util.List;
+
 /**
  * @author Bogdan_Ponamarev.
  */
@@ -13,5 +15,8 @@ public interface WordService {
 
     List<Word> getWordsByTopic(String topic) throws DbException, ValidationException;
 
-    String translate(String text);
+    String translate(String text, String toLanguage);
+
+
+    List<String> getSupportedLanguages();
 }

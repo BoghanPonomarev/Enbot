@@ -80,6 +80,11 @@ public class GetFileServlet extends HttpServlet {
         doPost(request, response);
     }
 
+    /**
+     *Get topic name from post request
+     * @param paramList - parameter with post request attributes because
+     * @return name of topic
+     */
     private String getTopicName(HttpServletRequest request, HttpServletResponse response,List<FileItem> paramList ) throws ServletException, IOException {
         List<String> errors = new ArrayList<>();
         String topicName = null;
@@ -96,6 +101,12 @@ public class GetFileServlet extends HttpServlet {
         return  topicName;
     }
 
+    /**
+     * Take charset from request param
+     * @param paramList - parameter with post request attributes because
+     * of using file upload
+     * @return charset token from {@code paramList}
+     */
     private Charset getCharset(HttpServletRequest request, HttpServletResponse response,List<FileItem> paramList ) throws ServletException, IOException, FileUploadException {
         List<String> errors = new ArrayList<>();
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("index.jsp");

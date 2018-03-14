@@ -9,6 +9,12 @@ import java.util.Arrays;
  * @author Bogdan_Ponamarev.
  */
 public class WordTextParserImpl implements WordTextParser{
+    /**
+     * Parse en-ru words in array of entity objects, between this
+     * parsing text must be validated
+     * @param text text to parse
+     * @return array of words
+     */
     @Override
     public Word[] parse(String text) {
         String [] lines =text.split(System.getProperty("line.separator"));

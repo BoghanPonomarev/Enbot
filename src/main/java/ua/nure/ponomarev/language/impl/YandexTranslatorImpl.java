@@ -9,10 +9,14 @@ import org.apache.logging.log4j.Logger;
 import ua.nure.ponomarev.language.Translator;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Bogdan_Ponamarev.
@@ -24,6 +28,7 @@ public class YandexTranslatorImpl implements Translator {
     + YANDEX_KEY + "&text=%s&lang=%s-%s";
     private static final String HTTP_YANDEX_REQUEST_FOR_TRANSLATE_WITHOUT_FROM_LANGUAGE = "https://translate.yandex.net/api/v1.5/tr.json/translate?key="
             + YANDEX_KEY + "&text=%s&lang=%s";
+    private static final String HTTP_YABDEX_REQUEST_FOR_SUPPORTED_LANGUAGES = "https://translate.yandex.net/api/v1.5/tr.json/getLangs?key="+YANDEX_KEY+"&ui=en";
     private static final String ENCODING = "UTF-8";
     private Gson gson;
 
@@ -45,7 +50,7 @@ public class YandexTranslatorImpl implements Translator {
         } catch (UnsupportedEncodingException e) {
             logger.error("Encoding is invalid");
         }
-        YandexResponseJson result = gson.fromJson(response, YandexResponseJson.class);
+        YandexTranslateResponseJson result = gson.fromJson(response, YandexTranslateResponseJson.class);
         return (result!=null) ? result.getText()[0] : null;
     }
     /**
@@ -62,16 +67,25 @@ public class YandexTranslatorImpl implements Translator {
         } catch (UnsupportedEncodingException e) {
             logger.error("Encoding is invalid");
         }
-        YandexResponseJson result = gson.fromJson(response, YandexResponseJson.class);
+        YandexTranslateResponseJson result = gson.fromJson(response, YandexTranslateResponseJson.class);
         return (result!=null) ? result.getText()[0] : null;
     }
+
+   @Override
+    public List<String> getSupportedLanguages() {
+        StringBuilder stringBuilder =new StringBuilder( sendRequest(HTTP_YABDEX_REQUEST_FOR_SUPPORTED_LANGUAGES));
+        stringBuilder.delete(0,stringBuilder.indexOf("langs")+8);
+        String finalString = stringBuilder.toString().replace("\"","");
+        return new ArrayList<String>(Arrays.asList(finalString.split(",")));
+    }
+
 
     /**
      * Send http request to yandex translator with filled parameters
      * @param URL_TO_SEND url of yandex translator
      * @return json format of code language
      */
-    private String sendRequest(String URL_TO_SEND) {
+    private  String sendRequest(String URL_TO_SEND) {
         try {
             URL url = new URL(URL_TO_SEND);
             URLConnection uc = url.openConnection();
@@ -96,7 +110,9 @@ public class YandexTranslatorImpl implements Translator {
     @Getter
     @Setter
     @AllArgsConstructor
-    private class YandexResponseJson {
+    private class YandexTranslateResponseJson {
         private String [] text;
     }
+
+
 }

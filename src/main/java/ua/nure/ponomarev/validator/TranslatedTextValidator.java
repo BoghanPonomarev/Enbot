@@ -52,7 +52,6 @@ public class TranslatedTextValidator implements Validator<String> {
             }
         }
         if(!exception.isEmpty()){
-
             throw exception;
         }
     }
